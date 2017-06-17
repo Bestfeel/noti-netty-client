@@ -93,7 +93,7 @@ public class MessageHandler extends SimpleChannelInboundHandler<String> {
 
                     String delivery_id = messageObject.getString("delivery_id");
                     String ackMessage = eventAckMessage(delivery_id);
-                    ctx.writeAndFlush(ackMessage);
+                    ctx.writeAndFlush(ackMessage + System.getProperty("line.separator"));
                 }
 
                 break;
