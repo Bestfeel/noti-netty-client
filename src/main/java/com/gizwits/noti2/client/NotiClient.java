@@ -81,7 +81,8 @@ public class NotiClient implements IService {
 
     @Override
     public boolean isRunning() {
-        return false;
+
+        return client.isRunning();
     }
 
     @Override
