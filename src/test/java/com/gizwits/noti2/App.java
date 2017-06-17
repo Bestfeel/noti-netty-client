@@ -1,6 +1,9 @@
 package com.gizwits.noti2;
 
+import com.gizwits.noti2.client.Events;
 import com.gizwits.noti2.client.NotiClient;
+
+import java.util.Arrays;
 
 /**
  * Created by feel on 2017/6/16.
@@ -16,7 +19,7 @@ public class App {
                 .build()
                 .setHost("snoti.gizwits.com")
                 .setPort(2017)
-                .login("xx", "xx", "xx", "client", 50);
+                .login("xx", "xx", "xx", "client", 50, Arrays.asList(Events.ONLINE, Events.OFFLINE, Events.STATUS_KV));
 
         // 启动
         notiClient.doStart();

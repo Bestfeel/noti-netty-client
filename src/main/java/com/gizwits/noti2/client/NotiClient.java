@@ -160,20 +160,18 @@ public class NotiClient implements IService {
     }
 
 
-    public NotiClient login(String product_key, String auth_id, String auth_secret, String subkey, int prefetch_count) {
+    public NotiClient login(String product_key, String auth_id, String auth_secret, String subkey, int prefetch_count, List<Events> events) {
         Data data = new Data();
         data.setProduct_key(product_key);
         data.setAuth_id(auth_id);
         data.setAuth_secret(auth_secret);
         data.setSubkey(subkey);
-        data.setEvents(Arrays.asList(Events.ONLINE, Events.OFFLINE, Events.STATUS_KV));
+        data.setEvents(events);
         Message message = new Message();
         message.setPrefetch_count(prefetch_count);
         message.setCmd(Command.LOGIN);
         message.setData(Arrays.asList(data));
-
         this.message = message;
-
         return this;
     }
 
