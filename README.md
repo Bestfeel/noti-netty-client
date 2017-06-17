@@ -22,9 +22,9 @@ NotiClient notiClient = NotiClient
 
 
     // 发起远程控制
-    //notiClient.sendContorlMessage(String product_key, String mac, String did, Map attrs);
-    //notiClient.sendContorlMessage(String product_key, String mac, String did, DataCommand cmd, Byte[] raw)
-    //notiClient.sendContorlMessage(List< RemoteControlData > contorlMessage)
+    //notiClient.sendControlMessage(String product_key, String mac, String did, Map attrs);
+    //notiClient.sendControlMessage(String product_key, String mac, String did, DataCommand cmd, Byte[] raw)
+    //notiClient.sendControlMessage(List< RemoteControlData > contorlMessage)
 
 
     // 接收服务端推送事件消息

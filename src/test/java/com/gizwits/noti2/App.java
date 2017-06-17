@@ -22,13 +22,13 @@ public class App {
         notiClient.doStart();
 
 
-        // 发送远程控制
-        //notiClient.sendContorlMessage(String product_key, String mac, String did, Map attrs);
-        //notiClient.sendContorlMessage(String product_key, String mac, String did, Map attrs)
-        //notiClient.sendContorlMessage(List< RemoteControlData > contorlMessage)
+        // 发起远程控制
+        //notiClient.sendControlMessage(String product_key, String mac, String did, Map attrs);
+        //notiClient.sendControlMessage(String product_key, String mac, String did, DataCommand cmd, Byte[] raw)
+        //notiClient.sendControlMessage(List<RemoteControlData> controlMessage)
 
 
-        //  订阅(接收)推送事件消息
+        //订阅(接收)推送事件消息
         while (true) {
 
             String messgae = notiClient.reveiceMessgae();

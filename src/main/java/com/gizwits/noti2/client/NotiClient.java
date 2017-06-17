@@ -185,7 +185,7 @@ public class NotiClient implements IService {
      * @param did
      * @param attrs
      */
-    public void sendContorlMessage(String product_key, String mac, String did, Map attrs) {
+    public void sendControlMessage(String product_key, String mac, String did, Map attrs) {
         Message message = new Message();
         message.setCmd(Command.REMOTE_CONTROL_RES);
 
@@ -211,7 +211,7 @@ public class NotiClient implements IService {
      * @param cmd
      * @param raw
      */
-    public void sendContorlMessage(String product_key, String mac, String did, DataCommand cmd, Byte[] raw) {
+    public void sendControlMessage(String product_key, String mac, String did, DataCommand cmd, Byte[] raw) {
         Message message = new Message();
         message.setCmd(Command.REMOTE_CONTROL_RES);
         Data data = new Data();
@@ -230,14 +230,14 @@ public class NotiClient implements IService {
     /**
      * 发送远程设备控制
      *
-     * @param contorlMessage
+     * @param controlMessage
      */
-    public void sendContorlMessage(List<RemoteControlData> contorlMessage) {
+    public void sendControlMessage(List<RemoteControlData> controlMessage) {
 
         Message message = new Message();
         message.setCmd(Command.REMOTE_CONTROL_RES);
         ArrayList<Data> listData = new ArrayList<>();
-        for (RemoteControlData remoteControlData : contorlMessage) {
+        for (RemoteControlData remoteControlData : controlMessage) {
             Data data = new Data();
             data.setCmd(remoteControlData.getCmd());
             ControlData controlData = new ControlData();
