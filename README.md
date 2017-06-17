@@ -11,27 +11,27 @@
 
 ```
 
-  NotiClient notiClient = NotiClient
-                .build()
-                .setHost("snoti.gizwits.com")
-                .setPort(2017)
-                .login("product_key","auth_id", "auth_secret", "subkey", prefetch_count);
+NotiClient notiClient = NotiClient
+            .build()
+            .setHost("snoti.gizwits.com")
+            .setPort(2017)
+            .login("product_key","auth_id", "auth_secret", "subkey", prefetch_count);
 
-        // 启动
-        notiClient.doStart();
-
-
-        // 发送远程控制
-        //notiClient.sendContorlMessage(String product_key, String mac, String did, Map attrs);
-        //notiClient.sendContorlMessage(String product_key, String mac, String did, Map attrs)
-        //notiClient.sendContorlMessage(List< RemoteControlData > contorlMessage)
+    // 启动
+    notiClient.doStart();
 
 
-        //  接收推送事件消息
-        while (true) {
-            String messgae = notiClient.reveiceMessgae();
+    // 发起远程控制
+    //notiClient.sendContorlMessage(String product_key, String mac, String did, Map attrs);
+    //notiClient.sendContorlMessage(String product_key, String mac, String did, DataCommand cmd, Byte[] raw)
+    //notiClient.sendContorlMessage(List< RemoteControlData > contorlMessage)
 
-        }
+
+    // 接收服务端推送事件消息
+    while (true) {
+        String messgae = notiClient.reveiceMessgae();
+
+    }
         
         
 ```
