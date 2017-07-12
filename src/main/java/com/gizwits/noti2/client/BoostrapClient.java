@@ -1,5 +1,6 @@
 package com.gizwits.noti2.client;
 
+import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelInitializer;
@@ -61,6 +62,11 @@ public class BoostrapClient extends BaseClient implements Runnable {
         return this;
     }
 
+    public ChannelFuture getChannelFuture() {
+
+        return this.channelFuture;
+    }
+
     private X509TrustManager trustManager() {
         X509TrustManager tm = new X509TrustManager() {
             @Override
@@ -93,7 +99,7 @@ public class BoostrapClient extends BaseClient implements Runnable {
                 SSLEngine sslEngine = sslContext.createSSLEngine();
                 sslEngine.setUseClientMode(true);
                 ch.pipeline().addLast(new SslHandler(sslEngine));
-                ch.pipeline().addLast(new IdleStateHandler(10, 10, 0));// 心跳检查
+                ch.pipeline().addLast(new IdleStateHandler(1, 1, 0, TimeUnit.MINUTES));// 心跳检查
                 ch.pipeline().addLast(new DelimiterBasedFrameDecoder(8192, Delimiters.lineDelimiter()));
                 ch.pipeline().addLast(new StringDecoder());
                 ch.pipeline().addLast(new StringEncoder());

@@ -20,8 +20,9 @@ public enum Command {
     @SerializedName("remote_control_res")
     REMOTE_CONTROL_RES("remote_control_res"),
     @SerializedName("event_push")
-    EVENT_PUSH("event_push");//  推送事件
-
+    EVENT_PUSH("event_push"),//  推送事件
+    @SerializedName("invalid_msg")
+    INVALID_MSG("invalid_msg");
     private String name;
 
     Command(String name) {

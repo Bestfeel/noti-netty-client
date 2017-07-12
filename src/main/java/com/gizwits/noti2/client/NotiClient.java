@@ -1,31 +1,34 @@
 package com.gizwits.noti2.client;
 
+import com.google.gson.Gson;
+import io.netty.channel.Channel;
 import io.netty.util.concurrent.DefaultThreadFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Created by feel on 2017/6/16.
  */
 public class NotiClient implements IService {
 
-    private static final Logger log = LoggerFactory.getLogger(NotiClient.class);
+    private static final Logger logger = LoggerFactory.getLogger(NotiClient.class);
     private int port = 2017;
     private String host = "snoti.gizwits.com";
     private BoostrapClient client;
     private Message message;
     private BlockingQueue<Message> queue;
-
     private BlockingQueue<String> receiveQueue;
+    private Gson gson = new Gson();
+    private ExecutorService executorService = Executors.newCachedThreadPool(new DefaultThreadFactory("--NotiClientThread-"));
+
+    private AtomicBoolean falagPushMsg = new AtomicBoolean(false);
 
     public NotiClient() {
 
@@ -61,9 +64,37 @@ public class NotiClient implements IService {
 
         this.client = new BoostrapClient(this).setOption(host, port).login(message);
 
-        ExecutorService executorService = Executors.newCachedThreadPool(new DefaultThreadFactory("--clientThread-"));
-
         executorService.execute(this.client);
+
+    }
+
+    public void startPushMessage() {
+
+        if (!falagPushMsg.get() && this.client.isRunning()) {
+
+            executorService.execute(() -> {
+                falagPushMsg.set(true);
+                while (this.client.isRunning()) {
+
+                    Channel channel = client.getChannelFuture().channel();
+                    if (!channel.isOpen() || !channel.isWritable()) {
+
+                        logger.info("channel isOpen:{},channel isWritable :{}", channel.isOpen(), channel.isWritable());
+
+                        restart();
+
+                    } else if (channel.isWritable()) {
+
+                        String message = gson.toJson(message()) + System.getProperty("line.separator");
+                        channel.writeAndFlush(message);
+
+                    }
+                }
+                falagPushMsg.set(false);
+
+            });
+        }
+
     }
 
     @Override
@@ -107,7 +138,6 @@ public class NotiClient implements IService {
                 e.printStackTrace();
             }
         }
-
         return false;
     }
 
@@ -186,8 +216,8 @@ public class NotiClient implements IService {
      */
     public void sendControlMessage(String product_key, String mac, String did, Map attrs) {
         Message message = new Message();
-        message.setCmd(Command.REMOTE_CONTROL_RES);
-
+        message.setCmd(Command.REMOTE_CONTROL_REQ);
+        message.setMsg_id(UUID.randomUUID().toString());
         Data data = new Data();
         data.setCmd(DataCommand.WRITE_ATTRS);
 
@@ -212,7 +242,7 @@ public class NotiClient implements IService {
      */
     public void sendControlMessage(String product_key, String mac, String did, DataCommand cmd, Byte[] raw) {
         Message message = new Message();
-        message.setCmd(Command.REMOTE_CONTROL_RES);
+        message.setCmd(Command.REMOTE_CONTROL_REQ);
         Data data = new Data();
         data.setCmd(cmd);
         ControlData controlData = new ControlData();
@@ -234,7 +264,7 @@ public class NotiClient implements IService {
     public void sendControlMessage(List<RemoteControlData> controlMessage) {
 
         Message message = new Message();
-        message.setCmd(Command.REMOTE_CONTROL_RES);
+        message.setCmd(Command.REMOTE_CONTROL_REQ);
         ArrayList<Data> listData = new ArrayList<>();
         for (RemoteControlData remoteControlData : controlMessage) {
             Data data = new Data();

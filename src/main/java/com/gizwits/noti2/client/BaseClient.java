@@ -32,7 +32,7 @@ public abstract class BaseClient implements IService {
     protected int port;
     protected String host;
 
-    private ChannelFuture channelFuture;
+    protected ChannelFuture channelFuture;
     private Bootstrap bootstrap;
 
     public BaseClient() {
