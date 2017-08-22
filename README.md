@@ -10,7 +10,7 @@
 
 ```
  <dependency>
-             <groupId>com.gizwits</groupId>
+             <groupId>com.gizwits.noti2</groupId>
              <artifactId>noti-netty-client</artifactId>
              <version>0.1.0</version>
  </dependency>
