@@ -2,4 +2,4 @@
 target/
 *.iml
 readme.txt
-
+src/test
