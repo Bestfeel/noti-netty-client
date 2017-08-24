@@ -27,7 +27,9 @@ public class MessageHandler extends SimpleChannelInboundHandler<String> {
 
     private NotiClient client;
 
-    public static final String PING = "{\"cmd\":\"ping\"}" + System.getProperty("line.separator");
+    private static final String lineSeparator = "\n";
+
+    public static final String PING = "{\"cmd\":\"ping\"}" + lineSeparator;
 
 
     public MessageHandler(NotiClient client, Message message) {
@@ -46,7 +48,7 @@ public class MessageHandler extends SimpleChannelInboundHandler<String> {
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         super.channelActive(ctx);
-        ctx.writeAndFlush(gson.toJson(message) + System.getProperty("line.separator"));
+        ctx.writeAndFlush(gson.toJson(message) + lineSeparator);
 
     }
 
@@ -112,7 +114,7 @@ public class MessageHandler extends SimpleChannelInboundHandler<String> {
                 if (submit.isSuccess()) {
                     Object delivery_id = messageObject.get("delivery_id");
                     String ackMessage = eventAckMessage(delivery_id);
-                    ctx.writeAndFlush(ackMessage + System.getProperty("line.separator"));
+                    ctx.writeAndFlush(ackMessage + lineSeparator);
                 }
             }
         });

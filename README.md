@@ -10,7 +10,7 @@
 
 ```
  <dependency>
-             <groupId>com.gizwits.noti2</groupId>
+             <groupId>com.gizwits</groupId>
              <artifactId>noti-netty-client</artifactId>
              <version>0.1.0</version>
  </dependency>
@@ -75,3 +75,4 @@ while ((messgae = notiClient.reveiceMessgae()) != null) {
 
 
 * [机智云官方SNoti API文档](http://docs.gizwits.com/zh-cn/Cloud/NotificationAPI.html)
+* [snoti与spring-boot集成](https://github.com/Bestfeel/gizwits-iot-course)

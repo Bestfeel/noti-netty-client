@@ -27,7 +27,7 @@ public class NotiClient implements IService {
     private BlockingQueue<String> receiveQueue;
     private Gson gson = new Gson();
     private ExecutorService executorService = Executors.newCachedThreadPool(new DefaultThreadFactory("--NotiClientThread-"));
-
+    private static final String lineSeparator = "\n";
     private AtomicBoolean falagPushMsg = new AtomicBoolean(false);
 
     public NotiClient() {
@@ -85,7 +85,7 @@ public class NotiClient implements IService {
 
                     } else if (channel.isWritable()) {
 
-                        String message = gson.toJson(message()) + System.getProperty("line.separator");
+                        String message = gson.toJson(message()) + lineSeparator;
                         channel.writeAndFlush(message);
 
                     }
@@ -143,7 +143,6 @@ public class NotiClient implements IService {
 
     /**
      * 接收推送事件消息
-     *
      * @return
      */
     public String reveiceMessgae() {
