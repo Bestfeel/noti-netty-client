@@ -107,15 +107,11 @@ public class MessageHandler extends SimpleChannelInboundHandler<String> {
 
         Future<Boolean> submit = ctx.executor().submit(() -> client.dispatch(messageObject.toJSONString()));
 
-        submit.addListener(new FutureListener() {
-
-            @Override
-            public void operationComplete(Future future) throws Exception {
-                if (submit.isSuccess()) {
-                    Object delivery_id = messageObject.get("delivery_id");
-                    String ackMessage = eventAckMessage(delivery_id);
-                    ctx.writeAndFlush(ackMessage + lineSeparator);
-                }
+        submit.addListener((FutureListener) future -> {
+            if (submit.isSuccess()) {
+                Object delivery_id = messageObject.get("delivery_id");
+                String ackMessage = eventAckMessage(delivery_id);
+                ctx.writeAndFlush(ackMessage + lineSeparator);
             }
         });
     }
