@@ -4,10 +4,9 @@
 
     <groupId>com.gizwits</groupId>
     <artifactId>noti-netty-client</artifactId>
-    <version>0.1.0</version>
+    <version>0.1.1</version>
     <packaging>jar</packaging>
-    <description>Enterprise customers can use the secure data transmission channel provided by SNoti, real-time data collection equipment, equipment for information sorting, equipment status statistics, equipment monitoring, etc .; can also remote control function, real-time transmission of business instructions to control online equipment
-    </description>
+    <description>Enterprise customers can use the secure data transmission channel provided by SNoti, real-time data collection equipment, equipment for information sorting, equipment status statistics, equipment monitoring, etc .; can also remote control function, real-time transmission of business instructions to control online equipment</description>
     <name>noti-netty-client</name>
     <url>http://maven.apache.org</url>
 
@@ -156,6 +155,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-gpg-plugin</artifactId>
+                <version>1.6</version>
                 <executions>
                     <execution>
                         <phase>verify</phase>
