@@ -48,7 +48,7 @@ TimeUnit.SECONDS.sleep(1);
 notiClient.sendControlMessage("419f2c6e9c374558b4e8da23466badc0", "virtual:site", "gSFMEh75kSQ46ecqAYiJ4h", attrs);
 TimeUnit.SECONDS.sleep(1);
 notiClient.sendControlMessage("419f2c6e9c374558b4e8da23466badc0", "virtual:site", "gSFMEh75kSQ46ecqAYiJ4h", attrs);
-notiClient.startPushMessage();
+
 
 //订阅(接收)推送事件消息
 String messgae = null;

@@ -28,7 +28,7 @@ public class NotiClient implements IService {
     private Gson gson = new Gson();
     private ExecutorService executorService = Executors.newCachedThreadPool(new DefaultThreadFactory("--NotiClientThread-"));
     private static final String lineSeparator = "\n";
-    private AtomicBoolean falagPushMsg = new AtomicBoolean(false);
+    private AtomicBoolean flagPushMsg = new AtomicBoolean(false);
 
     public NotiClient() {
 
@@ -70,10 +70,10 @@ public class NotiClient implements IService {
 
     public void startPushMessage() {
 
-        if (!falagPushMsg.get() && this.client.isRunning()) {
+        if (!flagPushMsg.get() && this.client.isRunning()) {
 
             executorService.execute(() -> {
-                falagPushMsg.set(true);
+                flagPushMsg.set(true);
                 while (this.client.isRunning()) {
 
                     Channel channel = client.getChannelFuture().channel();
@@ -90,7 +90,7 @@ public class NotiClient implements IService {
 
                     }
                 }
-                falagPushMsg.set(false);
+                flagPushMsg.set(false);
 
             });
         }
