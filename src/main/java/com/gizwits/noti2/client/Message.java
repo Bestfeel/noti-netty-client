@@ -52,7 +52,7 @@ public final class Message<T extends Data> {
         this.prefetchCount = prefetchCount;
     }
 
-    public List<? extends Data> getData() {
+    public List<T> getData() {
         return data;
     }
 
