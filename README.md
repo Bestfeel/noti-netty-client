@@ -12,7 +12,7 @@
  <dependency>
              <groupId>com.gizwits</groupId>
              <artifactId>noti-netty-client</artifactId>
-             <version>0.1.1</version>
+             <version>0.1.2</version>
  </dependency>
         
 ```
@@ -22,19 +22,34 @@
 
 ```
 
+// 单个pk 登入
 NotiClient notiClient = NotiClient
         .build()
         .setHost("snoti.gizwits.com")
         .setPort(2017)
         .login("419f2c6e9c374558b4e8da23466badc0", "AvTF3Bq9SMiHJKV5yIpdKw", "bf0bcifpQzesK/ZfOsXYAQ", "client", 50, Arrays.asList(Events.ONLINE, Events.OFFLINE, Events.STATUS_KV, Events.STATUS_RAW, Events.ATTR_ALERT, Events.ATTR_FAULT));
 
+
+
+//多product_key登入
+/*
+ List<LoginData> loginData = Arrays.asList(new LoginData(String productKey, String authId, String authSecret, String subkey, List<Events> events))
+             , new LoginData(new LoginData(String productKey, String authId, String authSecret, String subkey, List<Events> events)));
+
+   NotiClient notiClient = NotiClient
+                .build()
+                .setHost("snoti.gizwits.com")
+                .setPort(2017)
+                .login(loginData);
+                /*
+
 //启动
 notiClient.doStart();
 
 // 发起远程控制
-//notiClient.sendControlMessage(String product_key, String mac, String did, Map attrs);
-//notiClient.sendControlMessage(String product_key, String mac, String did, DataCommand cmd, Byte[] raw)
-//notiClient.sendControlMessage(List<RemoteControlData> controlMessage)
+//notiClient.sendControlMessage(String productKey, String mac, String did, Map attrs);//发送kv控制指令
+//notiClient.sendControlMessage(String productKey, String mac, String did, DataCommand cmd, Byte[] raw) // 发送byte数组控制指令
+//notiClient.sendControlMessage(List<RemoteControlData> controlMessage) // 批量发送控制指令.可发送kv,byte数组
 
 
 //test send message

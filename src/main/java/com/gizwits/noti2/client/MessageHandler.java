@@ -49,7 +49,6 @@ public class MessageHandler extends SimpleChannelInboundHandler<String> {
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         super.channelActive(ctx);
         ctx.writeAndFlush(gson.toJson(message) + lineSeparator);
-
     }
 
     @Override

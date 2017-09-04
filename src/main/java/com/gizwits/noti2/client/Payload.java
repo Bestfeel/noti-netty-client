@@ -1,18 +1,24 @@
 package com.gizwits.noti2.client;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.Map;
 
 /**
- * Created by feel on 2017/6/17.
+ * 远程控制设备信息
  */
-public class RemoteControlData {
+public final class Payload {
 
+    @SerializedName("product_key")
     private String productKey;
+    @SerializedName("mac")
     private String mac;
+    @SerializedName("did")
     private String did;
-    private DataCommand cmd;
-    private Byte[] raw;
+    @SerializedName("attrs")
     private Map attrs;
+    @SerializedName("raw")
+    private Byte[] raw;
 
     public String getProductKey() {
         return productKey;
@@ -38,12 +44,16 @@ public class RemoteControlData {
         this.did = did;
     }
 
-    public DataCommand getCmd() {
-        return cmd;
+    public Map getAttrs() {
+        return attrs;
     }
 
-    public void setCmd(DataCommand cmd) {
-        this.cmd = cmd;
+
+    public void setAttrs(Map attrs) {
+        if (attrs != null) {
+            this.attrs = attrs;
+        }
+
     }
 
     public Byte[] getRaw() {
@@ -51,19 +61,9 @@ public class RemoteControlData {
     }
 
     public void setRaw(Byte[] raw) {
+
         if (raw != null) {
             this.raw = raw;
-        }
-    }
-
-    public Map getAttrs() {
-        return attrs;
-    }
-
-    public void setAttrs(Map attrs) {
-
-        if (attrs != null) {
-            this.attrs = attrs;
         }
 
     }

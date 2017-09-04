@@ -143,6 +143,7 @@ public class NotiClient implements IService {
 
     /**
      * 接收推送事件消息
+     *
      * @return
      */
     public String reveiceMessgae() {
@@ -190,15 +191,26 @@ public class NotiClient implements IService {
     }
 
 
-    public NotiClient login(String product_key, String auth_id, String auth_secret, String subkey, int prefetch_count, List<Events> events) {
-        Data data = new Data();
-        data.setProduct_key(product_key);
-        data.setAuth_id(auth_id);
-        data.setAuth_secret(auth_secret);
+    /**
+     * 单个product_key 登入
+     *
+     * @param productKey
+     * @param authId
+     * @param authSecret
+     * @param subkey
+     * @param prefetchCount
+     * @param events
+     * @return
+     */
+    public NotiClient login(String productKey, String authId, String authSecret, String subkey, int prefetchCount, List<Events> events) {
+        LoginData data = new LoginData();
+        data.setProductKey(productKey);
+        data.setAuthId(authId);
+        data.setAuthSecret(authSecret);
         data.setSubkey(subkey);
         data.setEvents(events);
-        Message message = new Message();
-        message.setPrefetch_count(prefetch_count);
+        Message message = new Message<LoginData>();
+        message.setPrefetchCount(prefetchCount);
         message.setCmd(Command.LOGIN);
         message.setData(Arrays.asList(data));
         this.message = message;
@@ -206,26 +218,112 @@ public class NotiClient implements IService {
     }
 
     /**
+     * 单个product_key 登入
+     *
+     * @param productKey
+     * @param authId
+     * @param authSecret
+     * @param subkey
+     * @param events
+     * @return
+     */
+    public NotiClient login(String productKey, String authId, String authSecret, String subkey, List<Events> events) {
+        LoginData data = new LoginData();
+        data.setProductKey(productKey);
+        data.setAuthId(authId);
+        data.setAuthSecret(authSecret);
+        data.setSubkey(subkey);
+        data.setEvents(events);
+        Message message = new Message<LoginData>();
+        message.setCmd(Command.LOGIN);
+        message.setData(Arrays.asList(data));
+        this.message = message;
+        return this;
+    }
+
+    /**
+     * 单个product_key 登入
+     *
+     * @param prefetchCount
+     * @param loginData
+     * @return
+     */
+    public NotiClient login(int prefetchCount, LoginData loginData) {
+        Message message = new Message<LoginData>();
+        message.setPrefetchCount(prefetchCount);
+        message.setCmd(Command.LOGIN);
+        message.setData(Arrays.asList(loginData));
+        this.message = message;
+        return this;
+    }
+
+
+    /**
+     * 单个product_key 登入
+     *
+     * @param loginData
+     * @return
+     */
+    public NotiClient login(LoginData loginData) {
+        Message message = new Message<LoginData>();
+        message.setCmd(Command.LOGIN);
+        message.setData(Arrays.asList(loginData));
+        this.message = message;
+        return this;
+    }
+
+
+    /**
+     * 多个product_key 登入
+     *
+     * @param prefetchCount
+     * @param loginData
+     * @return
+     */
+    public NotiClient login(int prefetchCount, List<LoginData> loginData) {
+        Message message = new Message<LoginData>();
+        message.setPrefetchCount(prefetchCount);
+        message.setCmd(Command.LOGIN);
+        message.setData(loginData);
+        this.message = message;
+        return this;
+    }
+
+    /**
+     * 多个product_key 登入
+     *
+     * @param loginData
+     * @return
+     */
+    public NotiClient login(List<LoginData> loginData) {
+        Message message = new Message<LoginData>();
+        message.setCmd(Command.LOGIN);
+        message.setData(loginData);
+        this.message = message;
+        return this;
+    }
+
+    /**
      * 发送远程设备控制
      *
-     * @param product_key
+     * @param productKey
      * @param mac
      * @param did
      * @param attrs
      */
-    public void sendControlMessage(String product_key, String mac, String did, Map attrs) {
-        Message message = new Message();
+    public void sendControlMessage(String productKey, String mac, String did, Map attrs) {
+        Message message = new Message<ControlData>();
         message.setCmd(Command.REMOTE_CONTROL_REQ);
-        message.setMsg_id(UUID.randomUUID().toString());
-        Data data = new Data();
+        message.setMsgId(UUID.randomUUID().toString());
+        ControlData data = new ControlData();
         data.setCmd(DataCommand.WRITE_ATTRS);
 
-        ControlData controlData = new ControlData();
-        controlData.setProduct_key(product_key);
-        controlData.setMac(mac);
-        controlData.setDid(did);
-        controlData.setAttrs(attrs);
-        data.setData(controlData);
+        Payload payload = new Payload();
+        payload.setProductKey(productKey);
+        payload.setMac(mac);
+        payload.setDid(did);
+        payload.setAttrs(attrs);
+        data.setData(payload);
         message.setData(Arrays.asList(data));
         this.putMessage(message);
     }
@@ -233,43 +331,43 @@ public class NotiClient implements IService {
     /**
      * 发送远程设备控制
      *
-     * @param product_key
+     * @param productKey
      * @param mac
      * @param did
      * @param cmd
      * @param raw
      */
-    public void sendControlMessage(String product_key, String mac, String did, DataCommand cmd, Byte[] raw) {
-        Message message = new Message();
+    public void sendControlMessage(String productKey, String mac, String did, DataCommand cmd, Byte[] raw) {
+        Message message = new Message<ControlData>();
         message.setCmd(Command.REMOTE_CONTROL_REQ);
-        Data data = new Data();
+        ControlData data = new ControlData();
         data.setCmd(cmd);
-        ControlData controlData = new ControlData();
-        controlData.setProduct_key(product_key);
-        controlData.setMac(mac);
-        controlData.setDid(did);
-        controlData.setRaw(raw);
-        data.setData(controlData);
+        Payload payload = new Payload();
+        payload.setProductKey(productKey);
+        payload.setMac(mac);
+        payload.setDid(did);
+        payload.setRaw(raw);
+        data.setData(payload);
         message.setData(Arrays.asList(data));
         this.putMessage(message);
 
     }
 
     /**
-     * 发送远程设备控制
+     * 批量发送远程设备控制
      *
      * @param controlMessage
      */
     public void sendControlMessage(List<RemoteControlData> controlMessage) {
 
-        Message message = new Message();
+        Message message = new Message<ControlData>();
         message.setCmd(Command.REMOTE_CONTROL_REQ);
         ArrayList<Data> listData = new ArrayList<>();
         for (RemoteControlData remoteControlData : controlMessage) {
-            Data data = new Data();
+            ControlData data = new ControlData();
             data.setCmd(remoteControlData.getCmd());
-            ControlData controlData = new ControlData();
-            controlData.setProduct_key(remoteControlData.getProduct_key());
+            Payload controlData = new Payload();
+            controlData.setProductKey(remoteControlData.getProductKey());
             controlData.setMac(remoteControlData.getMac());
             controlData.setDid(remoteControlData.getDid());
             controlData.setRaw(remoteControlData.getRaw());
