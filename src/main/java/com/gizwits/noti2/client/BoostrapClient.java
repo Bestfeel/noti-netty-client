@@ -41,7 +41,7 @@ public class BoostrapClient extends BaseClient implements Runnable {
     @Override
     public void init() {
         if (!isRuning.get()) {
-            log.info(" NotiClient is already  init");
+            log.info("NotiClient is already  init");
         }
     }
 
@@ -127,12 +127,12 @@ public class BoostrapClient extends BaseClient implements Runnable {
 
                     isRuning.set(true);
 
-                    log.info("Started NotiClient port: {}", port);
+                    log.info("Started NotiClient Listening port: {}", port);
                 }
 
             } else {
 
-                log.error("Started NotiClient Failed  port:{}", port);
+                log.error("Started NotiClient Failed Listening port:{}", port);
 
                 f.channel().eventLoop().schedule(() -> restart(), 1, TimeUnit.SECONDS);
             }

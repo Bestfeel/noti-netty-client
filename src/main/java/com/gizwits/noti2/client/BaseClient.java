@@ -24,7 +24,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public abstract class BaseClient implements IService {
 
-    private static final Logger log = LoggerFactory.getLogger(BaseClient.class);
+    private static final Logger logger = LoggerFactory.getLogger(BaseClient.class);
 
     private EventLoopGroup workerGroup;
     protected AtomicBoolean isRuning = new AtomicBoolean(false);
@@ -49,13 +49,14 @@ public abstract class BaseClient implements IService {
     public void destory() {
 
         isRuning.set(false);
-
-        if (this.workerGroup != null) {
+        if (this.workerGroup != null && channelFuture != null) {
+            channelFuture.channel().close();
             this.workerGroup.shutdownGracefully();
-            log.info("noti cliet  stop");
+            logger.info("noti client  destory");
+            this.workerGroup = null;
+            this.channelFuture = null;
         }
 
-        System.exit(1);
     }
 
     @Override
@@ -82,38 +83,30 @@ public abstract class BaseClient implements IService {
                 Native.offsetofEpollData();
                 return true;
             } catch (UnsatisfiedLinkError error) {
-                log.warn("can not load netty epoll, switch nio model.");
+                logger.warn("can not load netty epoll, switch nio model.");
             }
         }
         return false;
     }
 
-    @Override
-    public void doStop() {
-
-        destory();
-
-    }
 
     @Override
     public void restart() {
 
-
         if (isRunning() && channelFuture.channel().isOpen()) {
-
             GenericFutureListener eventLister = getEventLister();
             channelFuture.channel().close();
-
             channelFuture = bootstrap.connect(host, port).addListener(eventLister);
             channelFuture.channel().closeFuture().addListener(eventLister);
-
+            logger.info("client already  restart ");
         } else {
-
             destory();
         }
+    }
 
-        log.info("client already  restart ");
-
+    @Override
+    public void doStop() {
+        destory();
     }
 
     @Override
@@ -179,8 +172,8 @@ public abstract class BaseClient implements IService {
 
         } catch (Exception e) {
 
-            log.error("Client start exception", e);
-            throw new RuntimeException("Client start exception, port=" + port, e);
+            logger.error("Client start exception", e);
+            throw new RuntimeException("Client start exception, Listening port:" + port, e);
 
         }
     }

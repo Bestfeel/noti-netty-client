@@ -104,15 +104,18 @@ public class MessageHandler extends SimpleChannelInboundHandler<String> {
 
     private void dispathcMessage(ChannelHandlerContext ctx, JSONObject messageObject) {
 
-        Future<Boolean> submit = ctx.executor().submit(() -> client.dispatch(messageObject.toJSONString()));
+        if (client.isRunning()) {
 
-        submit.addListener((FutureListener) future -> {
-            if (submit.isSuccess()) {
-                Object delivery_id = messageObject.get("delivery_id");
-                String ackMessage = eventAckMessage(delivery_id);
-                ctx.writeAndFlush(ackMessage + lineSeparator);
-            }
-        });
+            Future<Boolean> submit = ctx.executor().submit(() -> client.dispatch(messageObject.toJSONString()));
+
+            submit.addListener((FutureListener) future -> {
+                if (submit.isSuccess()) {
+                    Object delivery_id = messageObject.get("delivery_id");
+                    String ackMessage = eventAckMessage(delivery_id);
+                    ctx.writeAndFlush(ackMessage + lineSeparator);
+                }
+            });
+        }
     }
 
     private String eventAckMessage(Object delivery_id) {

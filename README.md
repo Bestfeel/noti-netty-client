@@ -12,7 +12,7 @@
  <dependency>
              <groupId>com.gizwits</groupId>
              <artifactId>noti-netty-client</artifactId>
-             <version>0.1.2</version>
+             <version>0.1.3</version>
  </dependency>
         
 ```
@@ -66,11 +66,33 @@ notiClient.sendControlMessage("419f2c6e9c374558b4e8da23466badc0", "virtual:site"
 
 
 //订阅(接收)推送事件消息
-String messgae = null;
-while ((messgae = notiClient.reveiceMessgae()) != null) {
-    System.out.println("实时接收snoti消息:" + messgae);
+Thread thread = new Thread(() -> {
+    String messgae = null;
+    while ((messgae = notiClient.reveiceMessgae()) != null) {
+        System.out.println("实时接收snoti消息:" + messgae);
+    }
+});
+thread.start();
 
-}
+// 监听客户端销毁回调事件
+notiClient.addListener(event -> {
+
+    if (event == NotiEvent.DESTORY) {
+        try {
+
+            while (!notiClient.messageNone()) {
+                TimeUnit.SECONDS.sleep(1);
+            }
+
+            thread.interrupt();
+
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+});
  
         
 ```

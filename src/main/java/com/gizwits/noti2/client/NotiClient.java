@@ -7,10 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -25,20 +22,19 @@ public class NotiClient implements IService {
     private Message message;
     private BlockingQueue<Message> queue;
     private BlockingQueue<String> receiveQueue;
+    private Callback callback;
     private Gson gson = new Gson();
     private ExecutorService executorService = Executors.newCachedThreadPool(new DefaultThreadFactory("--NotiClientThread-"));
     private static final String lineSeparator = "\n";
     private AtomicBoolean flagPushMsg = new AtomicBoolean(false);
 
+
     public NotiClient() {
 
-        init();
     }
 
     public static NotiClient build() {
-
         return new NotiClient();
-
     }
 
     public NotiClient setPort(int port) {
@@ -56,15 +52,25 @@ public class NotiClient implements IService {
     public void init() {
         queue = new ArrayBlockingQueue<Message>(50000);
         receiveQueue = new ArrayBlockingQueue<String>(50000);
+
+        if (callback != null) {
+            callback.callback(NotiEvent.INIT);
+        }
     }
 
 
     @Override
     public void doStart() {
 
+        init();
+
         this.client = new BoostrapClient(this).setOption(host, port).login(message);
 
         executorService.execute(this.client);
+
+        if (callback != null) {
+            callback.callback(NotiEvent.SATRT);
+        }
 
     }
 
@@ -106,23 +112,48 @@ public class NotiClient implements IService {
     @Override
     public void restart() {
         if (client != null) {
+            logger.info("client now  restart ");
             client.restart();
+
+            if (callback != null) {
+                callback.callback(NotiEvent.RESATRT);
+            }
+            if (!isRunning()) {
+                destory();
+            }
         }
     }
 
     @Override
     public boolean isRunning() {
-
         return client.isRunning();
     }
 
     @Override
     public void destory() {
+
         if (client != null) {
-            client.doStop();
+            client.destory();
+        }
+
+        if (callback != null) {
+            callback.callback(NotiEvent.DESTORY);
+        }
+
+        try {
+            this.executorService.shutdownNow();
+            this.executorService.awaitTermination(5, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 
+
+    public void addListener(Callback callback) {
+
+        this.callback = callback;
+
+    }
 
     /**
      * @param msg
@@ -135,7 +166,6 @@ public class NotiClient implements IService {
                 return true;
             } catch (InterruptedException e) {
 
-                e.printStackTrace();
             }
         }
         return false;
@@ -147,27 +177,35 @@ public class NotiClient implements IService {
      * @return
      */
     public String reveiceMessgae() {
+
         try {
             return receiveQueue.take();
         } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
+
         }
 
         return null;
     }
 
-    public Message message() {
+    /**
+     * 消息是否处理完
+     *
+     * @return
+     */
+    public boolean messageNone() {
+
+        return receiveQueue.isEmpty();
+    }
+
+    private Message message() {
 
         try {
-            return queue.take();
+            if (isRunning()) {
+                return queue.take();
+            }
         } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
+        }
         return null;
     }
 
@@ -175,15 +213,15 @@ public class NotiClient implements IService {
      * @param msg
      * @return
      */
-    public boolean putMessage(Message msg) {
+    private boolean putMessage(Message msg) {
         if (msg != null) {
             try {
-                queue.put(msg);
-                return true;
-
+                if (isRunning()) {
+                    queue.put(msg);
+                    return true;
+                }
             } catch (InterruptedException e) {
 
-                e.printStackTrace();
             }
         }
 
@@ -311,7 +349,7 @@ public class NotiClient implements IService {
      * @param did
      * @param attrs
      */
-    public void sendControlMessage(String productKey, String mac, String did, Map attrs) {
+    public boolean sendControlMessage(String productKey, String mac, String did, Map attrs) {
         Message message = new Message<ControlData>();
         message.setCmd(Command.REMOTE_CONTROL_REQ);
         message.setMsgId(UUID.randomUUID().toString());
@@ -325,7 +363,7 @@ public class NotiClient implements IService {
         payload.setAttrs(attrs);
         data.setData(payload);
         message.setData(Arrays.asList(data));
-        this.putMessage(message);
+        return this.putMessage(message);
     }
 
     /**
@@ -337,7 +375,7 @@ public class NotiClient implements IService {
      * @param cmd
      * @param raw
      */
-    public void sendControlMessage(String productKey, String mac, String did, DataCommand cmd, Byte[] raw) {
+    public boolean sendControlMessage(String productKey, String mac, String did, DataCommand cmd, Byte[] raw) {
         Message message = new Message<ControlData>();
         message.setCmd(Command.REMOTE_CONTROL_REQ);
         ControlData data = new ControlData();
@@ -349,7 +387,7 @@ public class NotiClient implements IService {
         payload.setRaw(raw);
         data.setData(payload);
         message.setData(Arrays.asList(data));
-        this.putMessage(message);
+        return this.putMessage(message);
 
     }
 
@@ -358,7 +396,7 @@ public class NotiClient implements IService {
      *
      * @param controlMessage
      */
-    public void sendControlMessage(List<RemoteControlData> controlMessage) {
+    public boolean sendControlMessage(List<RemoteControlData> controlMessage) {
 
         Message message = new Message<ControlData>();
         message.setCmd(Command.REMOTE_CONTROL_REQ);
@@ -376,7 +414,7 @@ public class NotiClient implements IService {
             listData.add(data);
         }
         message.setData(listData);
-        this.putMessage(message);
+        return this.putMessage(message);
 
     }
 
