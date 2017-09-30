@@ -12,7 +12,7 @@
  <dependency>
              <groupId>com.gizwits</groupId>
              <artifactId>noti-netty-client</artifactId>
-             <version>0.1.3</version>
+             <version>0.1.4</version>
  </dependency>
         
 ```
@@ -27,6 +27,7 @@ NotiClient notiClient = NotiClient
         .build()
         .setHost("snoti.gizwits.com")
         .setPort(2017)
+        .setMaxFrameLength(8192)// 默认值是8192.可以作为扩展使用，默认可以不设置
         .login("419f2c6e9c374558b4e8da23466badc0", "AvTF3Bq9SMiHJKV5yIpdKw", "bf0bcifpQzesK/ZfOsXYAQ", "client", 50, Arrays.asList(Events.ONLINE, Events.OFFLINE, Events.STATUS_KV, Events.STATUS_RAW, Events.ATTR_ALERT, Events.ATTR_FAULT));
 
 

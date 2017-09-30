@@ -100,7 +100,7 @@ public class BoostrapClient extends BaseClient implements Runnable {
                 sslEngine.setUseClientMode(true);
                 ch.pipeline().addLast(new SslHandler(sslEngine));
                 ch.pipeline().addLast(new IdleStateHandler(1, 1, 0, TimeUnit.MINUTES));// 心跳检查
-                ch.pipeline().addLast(new DelimiterBasedFrameDecoder(8192, Delimiters.lineDelimiter()));
+                ch.pipeline().addLast(new DelimiterBasedFrameDecoder(client.getMaxFrameLength(), Delimiters.lineDelimiter()));
                 ch.pipeline().addLast(new StringDecoder());
                 ch.pipeline().addLast(new StringEncoder());
                 ch.pipeline().addLast(new MessageHandler(client, message));

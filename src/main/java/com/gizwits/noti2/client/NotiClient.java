@@ -27,7 +27,7 @@ public class NotiClient implements IService {
     private ExecutorService executorService = Executors.newCachedThreadPool(new DefaultThreadFactory("--NotiClientThread-"));
     private static final String lineSeparator = "\n";
     private AtomicBoolean flagPushMsg = new AtomicBoolean(false);
-
+    private int maxFrameLength = 8192;
 
     public NotiClient() {
 
@@ -47,6 +47,20 @@ public class NotiClient implements IService {
         return this;
     }
 
+    /**
+     * 设置接收单条数据帧长度,默认值是8192
+     *
+     * @param maxFrameLength
+     * @return
+     */
+    public NotiClient setMaxFrameLength(int maxFrameLength) {
+        this.maxFrameLength = maxFrameLength;
+        return this;
+    }
+
+    public int getMaxFrameLength() {
+        return this.maxFrameLength;
+    }
 
     @Override
     public void init() {
