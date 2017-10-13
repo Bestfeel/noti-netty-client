@@ -126,7 +126,6 @@ public class BoostrapClient extends BaseClient implements Runnable {
                 } else {
 
                     isRuning.set(true);
-
                     log.info("Started NotiClient Listening port: {}", port);
                 }
 

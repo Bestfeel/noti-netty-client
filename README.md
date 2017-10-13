@@ -1,21 +1,33 @@
 ###  SNoti 客户端
 
-基于netty 封装的客户端
 * 1、远程控制
 * 2、接收服务端推送的事件
 * 3、基于jdk8
 
 
-###  maven 引用
+###  客户端maven引用
 
 ```
  <dependency>
              <groupId>com.gizwits</groupId>
              <artifactId>noti-netty-client</artifactId>
-             <version>0.1.4</version>
+             <version>0.1.5</version>
  </dependency>
         
 ```
+
+### spring-boot-stater
+
+
+```
+ <dependency>
+             <groupId>com.gizwits</groupId>
+             <artifactId>snoti-spring-boot-starter</artifactId>
+             <version>0.1.5</version>
+ </dependency>
+        
+```
+
 
 ### 客户端使用
 
@@ -114,3 +126,4 @@ notiClient.addListener(event -> {
 
 * [机智云官方SNoti API文档](http://docs.gizwits.com/zh-cn/Cloud/NotificationAPI.html)
 * [snoti与spring-boot集成](https://github.com/Bestfeel/gizwits-iot-course)
+* [snoti-spring-boot-starter](https://github.com/Bestfeel/snoti-spring-boot-starter)

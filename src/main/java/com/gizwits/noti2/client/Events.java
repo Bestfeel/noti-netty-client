@@ -23,7 +23,14 @@ public enum Events {
     @SerializedName("center_control.sub_device_added")
     SUB_DEVICE_ADD("center_control.sub_device_added"),//中控添加子设备事件
     @SerializedName("center_control.sub_device_deleted")
-    SUB_DEVICE_DELETE("center_control.sub_device_deleted");//中控删除子设备事件
+    SUB_DEVICE_DELETE("center_control.sub_device_deleted"),//中控删除子设备事件
+    @SerializedName("device.bind")
+    BIND("device.bind"),//设备绑定消息
+    @SerializedName("device.unbind")
+    UNBIND("device.unbind"),//设备解绑消息
+    @SerializedName("device.reset")
+    RESET("device.reset");//设备重置消息
+
     private String name;
 
     Events(String name) {

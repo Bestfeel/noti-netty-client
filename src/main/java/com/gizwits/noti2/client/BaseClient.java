@@ -25,24 +25,21 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public abstract class BaseClient implements IService {
 
     private static final Logger logger = LoggerFactory.getLogger(BaseClient.class);
-
     private EventLoopGroup workerGroup;
     protected AtomicBoolean isRuning = new AtomicBoolean(false);
-
     protected int port;
     protected String host;
-
     protected ChannelFuture channelFuture;
     private Bootstrap bootstrap;
 
     public BaseClient() {
 
         init();
+
     }
 
     @Override
     public void init() {
-
     }
 
     @Override
@@ -51,7 +48,9 @@ public abstract class BaseClient implements IService {
         isRuning.set(false);
         if (this.workerGroup != null && channelFuture != null) {
             channelFuture.channel().close();
-            this.workerGroup.shutdownGracefully();
+            if (this.workerGroup != null) {
+                this.workerGroup.shutdownGracefully();
+            }
             logger.info("noti client  destory");
             this.workerGroup = null;
             this.channelFuture = null;
@@ -100,9 +99,12 @@ public abstract class BaseClient implements IService {
             channelFuture.channel().closeFuture().addListener(eventLister);
             logger.info("client already  restart ");
         } else {
+
+            logger.info("receive client destory");
             destory();
         }
     }
+
 
     @Override
     public void doStop() {
