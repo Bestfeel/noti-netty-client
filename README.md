@@ -11,7 +11,7 @@
  <dependency>
              <groupId>com.gizwits</groupId>
              <artifactId>noti-netty-client</artifactId>
-             <version>0.1.6</version>
+             <version>0.1.7</version>
  </dependency>
         
 ```
@@ -23,7 +23,7 @@
  <dependency>
              <groupId>com.gizwits</groupId>
              <artifactId>snoti-spring-boot-starter</artifactId>
-             <version>0.1.6</version>
+             <version>0.1.7</version>
  </dependency>
         
 ```
@@ -59,6 +59,8 @@ NotiClient notiClient = NotiClient
 //启动
 notiClient.doStart();
 
+// 等待启动（启动链接耗时),否则无法发送控制指令
+TimeUnit.SECONDS.sleep(1);
 // 发起远程控制
 //notiClient.sendControlMessage(String productKey, String mac, String did, Map attrs);//发送kv控制指令
 //notiClient.sendControlMessage(String productKey, String mac, String did, DataCommand cmd, Byte[] raw) // 发送byte数组控制指令
@@ -71,14 +73,14 @@ attrs.put("Wind_Velocity", "睡眠");
 attrs.put("Switch_Plasma", false);
 attrs.put("LED_Air_Quality", true);
 
-notiClient.sendControlMessage("419f2c6e9c374558b4e8da23466badc0", "virtual:site", "gSFMEh75kSQ46ecqAYiJ4h", attrs);
+  boolean sendBool1 =notiClient.sendControlMessage("419f2c6e9c374558b4e8da23466badc0", "virtual:site", "gSFMEh75kSQ46ecqAYiJ4h", attrs);
 TimeUnit.SECONDS.sleep(1);
-notiClient.sendControlMessage("419f2c6e9c374558b4e8da23466badc0", "virtual:site", "gSFMEh75kSQ46ecqAYiJ4h", attrs);
+  boolean sendBool2 =notiClient.sendControlMessage("419f2c6e9c374558b4e8da23466badc0", "virtual:site", "gSFMEh75kSQ46ecqAYiJ4h", attrs);
 TimeUnit.SECONDS.sleep(1);
-notiClient.sendControlMessage("419f2c6e9c374558b4e8da23466badc0", "virtual:site", "gSFMEh75kSQ46ecqAYiJ4h", attrs);
+  boolean sendBool3 =notiClient.sendControlMessage("419f2c6e9c374558b4e8da23466badc0", "virtual:site", "gSFMEh75kSQ46ecqAYiJ4h", attrs);
 
 
-//订阅(接收)推送事件消息
+//订阅(接收)推送事件消息,接收推送事件类型查看PushEvents枚举类
 Thread thread = new Thread(() -> {
     String messgae = null;
     while ((messgae = notiClient.receiveMessage()) != null) {
@@ -98,7 +100,7 @@ notiClient.addListener(event -> {
         try {
 
             while (!notiClient.messageNone()) {
-                TimeUnit.SECONDS.sleep(1);
+                TimeUnit.MILLISECONDS.sleep(100);
             }
 
             thread.interrupt();

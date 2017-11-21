@@ -30,7 +30,14 @@ public enum PushEvents {
     @SerializedName("sub_device_added")
     SUB_DEVICE_ADDED("sub_device_added"),//中控添加子设备事件
     @SerializedName("sub_device_deleted")
-    SUB_DEVICE_DELETED("sub_device_deleted");//中控删除子设备事件
+    SUB_DEVICE_DELETED("sub_device_deleted"),//中控删除子设备事件
+    @SerializedName("device_bind")
+    BIND("device_bind"),//设备绑定事件
+    @SerializedName("device_unbind")
+    UNBIND("device_unbind"),//设备解绑事件
+    @SerializedName("device_reset")
+    RESET("device_reset");//设备重置事件
+
 
     private String name;
 

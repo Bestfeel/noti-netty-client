@@ -4,7 +4,7 @@
 
     <groupId>com.gizwits</groupId>
     <artifactId>noti-netty-client</artifactId>
-    <version>0.1.6</version>
+    <version>0.1.7</version>
     <packaging>jar</packaging>
     <description>Enterprise customers can use the secure data transmission channel provided by SNoti, real-time data
         collection equipment, equipment for information sorting, equipment status statistics, equipment monitoring, etc

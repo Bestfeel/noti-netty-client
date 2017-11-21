@@ -65,7 +65,7 @@ public class MessageHandler extends SimpleChannelInboundHandler<String> {
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, String msg) throws Exception {
 
-        if (msg != "" && msg != null) {
+        if ((msg != "") && (msg != null) && (!msg.equalsIgnoreCase("null"))) {
 
             JSONObject messageObject = JSONObject.parseObject(msg);
             String cmd = messageObject.getString("cmd");

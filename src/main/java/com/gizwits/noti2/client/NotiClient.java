@@ -30,7 +30,7 @@ public class NotiClient implements IService {
     private Gson gson = new Gson();
     private ExecutorService executorService = Executors.newCachedThreadPool(new DefaultThreadFactory("--NotiClientThread-"));
     private static final String lineSeparator = "\n";
-    private AtomicBoolean flagPushMsg = new AtomicBoolean(false);
+    private AtomicBoolean destoryFlag = new AtomicBoolean(false);
     private int maxFrameLength = 8192;
 
     public NotiClient() {
@@ -81,7 +81,7 @@ public class NotiClient implements IService {
     public void doStart() {
 
         init();
-
+        destoryFlag.set(false);
         this.client = new BoostrapClient(this).setOption(host, port).login(message);
 
         executorService.execute(this.client);
@@ -94,26 +94,28 @@ public class NotiClient implements IService {
 
     public void startPushMessage() {
 
-        if (!flagPushMsg.get() && this.client.isRunning()) {
+        if (!destoryFlag.get() && this.client.isRunning()) {
 
             executorService.execute(() -> {
-                flagPushMsg.set(true);
                 while (this.client.isRunning()) {
 
                     Channel channel = client.getChannelFuture().channel();
+
                     if (!channel.isOpen() || !channel.isWritable()) {
-
                         logger.info("channel isOpen:{},channel isWritable :{}", channel.isOpen(), channel.isWritable());
-
                         restart();
 
                     } else if (channel.isWritable()) {
-                        String message = gson.toJson(message()) + lineSeparator;
-                        channel.writeAndFlush(message);
-
+                        String message = gson.toJson(message());
+                        if ((message != "") && (!message.equalsIgnoreCase("null")) && (message != null)) {
+                            channel.writeAndFlush(message + lineSeparator);
+                        }
                     }
+
                 }
-                flagPushMsg.set(false);
+
+                destoryFlag.set(true);
+
 
             });
         }
@@ -129,6 +131,7 @@ public class NotiClient implements IService {
     @Override
     public void restart() {
         if (client != null) {
+            destoryFlag.set(false);
             client.restart();
             if (callback != null) {
                 callback.callback(NotiEvent.RESATRT);
@@ -147,21 +150,23 @@ public class NotiClient implements IService {
     @Override
     public void destory() {
 
-        if (client != null) {
-            client.destory();
-        }
-
-        if (callback != null) {
-            callback.callback(NotiEvent.DESTORY);
-        }
-
         try {
+
+            destoryFlag.set(true);
+
             while (!queue.isEmpty()) {
-                TimeUnit.SECONDS.sleep(1);
+                TimeUnit.MILLISECONDS.sleep(100);
             }
             if (!this.executorService.isShutdown()) {
                 this.executorService.shutdownNow();
-                this.executorService.awaitTermination(5, TimeUnit.SECONDS);
+            }
+
+            if (client != null) {
+                client.destory();
+            }
+
+            if (callback != null) {
+                callback.callback(NotiEvent.DESTORY);
             }
 
         } catch (InterruptedException e) {
@@ -232,13 +237,15 @@ public class NotiClient implements IService {
     }
 
     /**
+     * 使用者需要自己处理推送失败的消息
+     *
      * @param msg
      * @return
      */
     private boolean putMessage(Message msg) {
         if (msg != null) {
             try {
-                if (isRunning()) {
+                if (isRunning() && !destoryFlag.get()) {
                     queue.put(msg);
                     return true;
                 }
