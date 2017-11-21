@@ -29,6 +29,12 @@ public class NotiClient implements IService {
     private AtomicBoolean flagPushMsg = new AtomicBoolean(false);
     private int maxFrameLength = 8192;
 
+    private final static String stopReceiveFlag = "noti stop send";
+    private final static Message stopSendFlag = new Message();
+    private CountDownLatch
+            sendCountDownLatch,
+            receiveCountDownLatch;
+
     public NotiClient() {
 
     }
@@ -66,7 +72,8 @@ public class NotiClient implements IService {
     public void init() {
         queue = new ArrayBlockingQueue<Message>(50000);
         receiveQueue = new ArrayBlockingQueue<String>(50000);
-
+        sendCountDownLatch = new CountDownLatch(1);
+        receiveCountDownLatch = new CountDownLatch(1);
         if (callback != null) {
             callback.callback(NotiEvent.INIT);
         }
@@ -104,21 +111,47 @@ public class NotiClient implements IService {
                         restart();
 
                     } else if (channel.isWritable()) {
-
-                        String message = gson.toJson(message()) + lineSeparator;
-                        channel.writeAndFlush(message);
+                        if (stopSendFlag != message()) {
+                            String message = gson.toJson(message()) + lineSeparator;
+                            channel.writeAndFlush(message);
+                        } else
+                            break;
 
                     }
                 }
                 flagPushMsg.set(false);
-
+                sendCountDownLatch.countDown();
             });
+        } else {
+            sendCountDownLatch.countDown();
         }
 
     }
 
     @Override
     public void doStop() {
+
+        try {
+            queue.put(stopSendFlag);
+            if (sendCountDownLatch != null) {
+                sendCountDownLatch.await();
+            }
+        } catch (InterruptedException e) {
+            logger.error(e.getMessage());
+        }
+
+        if (null != client) {
+            client.destory();
+        }
+
+        try {
+            receiveQueue.put(stopReceiveFlag);
+            if (null != receiveCountDownLatch) {
+                receiveCountDownLatch.await();
+            }
+        } catch (InterruptedException e) {
+        }
+
         destory();
     }
 
@@ -190,10 +223,15 @@ public class NotiClient implements IService {
      *
      * @return
      */
-    public String reveiceMessgae() {
+    public String receiveMessage() {
 
         try {
-            return receiveQueue.take();
+            String message = receiveQueue.take();
+            if (stopReceiveFlag != message) {
+                return message;
+            }
+            receiveCountDownLatch.countDown();
+            return null;
         } catch (InterruptedException e) {
 
         }
