@@ -11,19 +11,19 @@
  <dependency>
              <groupId>com.gizwits</groupId>
              <artifactId>noti-netty-client</artifactId>
-             <version>0.1.5</version>
+             <version>0.1.6</version>
  </dependency>
         
 ```
 
-### spring-boot-stater
+### snoti-spring-boot-starter
 
 
 ```
  <dependency>
              <groupId>com.gizwits</groupId>
              <artifactId>snoti-spring-boot-starter</artifactId>
-             <version>0.1.5</version>
+             <version>0.1.6</version>
  </dependency>
         
 ```
@@ -81,12 +81,16 @@ notiClient.sendControlMessage("419f2c6e9c374558b4e8da23466badc0", "virtual:site"
 //订阅(接收)推送事件消息
 Thread thread = new Thread(() -> {
     String messgae = null;
-    while ((messgae = notiClient.reveiceMessgae()) != null) {
+    while ((messgae = notiClient.receiveMessage()) != null) {
         System.out.println("实时接收snoti消息:" + messgae);
     }
 });
 thread.start();
 
+    // 测试销毁事件
+   // TimeUnit.SECONDS.sleep(5);
+   // notiClient.destory();
+        
 // 监听客户端销毁回调事件
 notiClient.addListener(event -> {
 

@@ -20,7 +20,10 @@ import java.util.Locale;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- * Created by feel on 2017/6/16.
+ * @author Feel
+ * @date 2017/6/16
+ * @email fye@gizwits.com
+ * @since 0.0.1
  */
 public abstract class BaseClient implements IService {
 
@@ -100,7 +103,6 @@ public abstract class BaseClient implements IService {
             logger.info("client already  restart ");
         } else {
 
-            logger.info("receive client destory");
             destory();
         }
     }

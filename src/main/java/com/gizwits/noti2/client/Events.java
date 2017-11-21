@@ -4,6 +4,11 @@ import com.google.gson.annotations.SerializedName;
 
 /**
  * 参考机智云相关协议文档：http://docs.gizwits.com/zh-cn/Cloud/NotificationAPI.html
+ *
+ * @author Feel
+ * @date 2017/6/16
+ * @email fye@gizwits.com
+ * @since 0.0.1
  */
 public enum Events {
     @SerializedName("device.attr_fault")

@@ -5,8 +5,10 @@ import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
 /**
- * Created by feel on 2017/6/16.
- * 消息封装
+ * @author Feel
+ * @date 2017/6/16
+ * @email fye@gizwits.com
+ * @since 0.0.1
  */
 public final class Message<T extends Data> {
     @SerializedName("cmd")

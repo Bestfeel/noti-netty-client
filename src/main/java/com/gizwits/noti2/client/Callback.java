@@ -1,7 +1,10 @@
 package com.gizwits.noti2.client;
 
 /**
- * Created by feel on 2017/9/30.
+ * @author Feel
+ * @date 2017/6/16
+ * @email fye@gizwits.com
+ * @since 0.0.1
  */
 public interface Callback {
     void callback(NotiEvent event);

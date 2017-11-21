@@ -3,7 +3,13 @@ package com.gizwits.noti2.client;
 import com.google.gson.annotations.SerializedName;
 
 /**
- * Created by feel on 2017/6/17.
+ * noti接收消息事件类型
+ * 参考机智云相关协议文档：http://docs.gizwits.com/zh-cn/Cloud/NotificationAPI.html
+ *
+ * @author Feel
+ * @date 2017/6/16
+ * @email fye@gizwits.com
+ * @since 0.0.1
  */
 public enum PushEvents {
 

@@ -3,7 +3,10 @@ package com.gizwits.noti2.client;
 import java.util.Map;
 
 /**
- * Created by feel on 2017/6/17.
+ * @author Feel
+ * @date 2017/6/16
+ * @email fye@gizwits.com
+ * @since 0.0.1
  */
 public class RemoteControlData {
 

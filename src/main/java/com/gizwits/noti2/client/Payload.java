@@ -4,8 +4,14 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.Map;
 
+
 /**
- * 远程控制设备信息
+ * 远程控制设备消息
+ *
+ * @author Feel
+ * @date 2017/6/16
+ * @email fye@gizwits.com
+ * @since 0.0.1
  */
 public final class Payload {
 

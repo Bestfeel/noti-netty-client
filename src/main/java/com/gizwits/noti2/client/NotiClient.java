@@ -10,8 +10,12 @@ import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+
 /**
- * Created by feel on 2017/6/16.
+ * @author Feel
+ * @date 2017/6/16
+ * @email fye@gizwits.com
+ * @since 0.0.1
  */
 public class NotiClient implements IService {
 
@@ -104,7 +108,6 @@ public class NotiClient implements IService {
                         restart();
 
                     } else if (channel.isWritable()) {
-
                         String message = gson.toJson(message()) + lineSeparator;
                         channel.writeAndFlush(message);
 
@@ -126,9 +129,7 @@ public class NotiClient implements IService {
     @Override
     public void restart() {
         if (client != null) {
-            logger.info("client now  restart ");
             client.restart();
-
             if (callback != null) {
                 callback.callback(NotiEvent.RESATRT);
             }
@@ -155,10 +156,16 @@ public class NotiClient implements IService {
         }
 
         try {
-            this.executorService.shutdownNow();
-            this.executorService.awaitTermination(5, TimeUnit.SECONDS);
+            while (!queue.isEmpty()) {
+                TimeUnit.SECONDS.sleep(1);
+            }
+            if (!this.executorService.isShutdown()) {
+                this.executorService.shutdownNow();
+                this.executorService.awaitTermination(5, TimeUnit.SECONDS);
+            }
+
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            logger.error("{}", e);
         }
     }
 
@@ -179,7 +186,7 @@ public class NotiClient implements IService {
                 receiveQueue.put(msg);
                 return true;
             } catch (InterruptedException e) {
-
+                logger.error("{}", e);
             }
         }
         return false;
@@ -190,7 +197,7 @@ public class NotiClient implements IService {
      *
      * @return
      */
-    public String reveiceMessgae() {
+    public String receiveMessage() {
 
         try {
             return receiveQueue.take();
@@ -217,6 +224,7 @@ public class NotiClient implements IService {
             if (isRunning()) {
                 return queue.take();
             }
+
         } catch (InterruptedException e) {
 
         }
@@ -235,7 +243,7 @@ public class NotiClient implements IService {
                     return true;
                 }
             } catch (InterruptedException e) {
-
+                logger.error("{}", e);
             }
         }
 
