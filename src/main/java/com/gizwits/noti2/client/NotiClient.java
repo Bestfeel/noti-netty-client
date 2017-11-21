@@ -223,7 +223,7 @@ public class NotiClient implements IService {
      *
      * @return
      */
-    public String reveiceMessgae() {
+    public String receiveMessage() {
 
         try {
             String message = receiveQueue.take();
